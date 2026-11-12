@@ -53,6 +53,7 @@ def integrate(startdate,stopdate):
                 p_dic[name] = bois
             else :
                 p_dic[name] += bois
+
     return p_dic
 
 SCF = integrate(202611101800,202611121200)
