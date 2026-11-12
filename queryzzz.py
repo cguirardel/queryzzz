@@ -54,29 +54,70 @@ def filterdate(startdate,stopdate):
         elif vi < startdate : break # accelerate the process, date are read from most recent to oldest
     return vnum
 
-def findally(players, ally = 'SCF'):
+def findally(players, ally = 'SCF', playerlist = None):
     filt = []
     keys = ['pseudo', 'field', 'grade']
     for p in players:
-        if p['alliance'] == ally:
-            pslice = {k:p[k] for k in keys}
-            filt.append(pslice)
+        if p['alliance'] == ally :
+            if playerlist is not None and p['pseudo'] in playerlist :
+                pslice = {k:p[k] for k in keys}
+                filt.append(pslice)
     return filt
 
-def integrate(startdate,stopdate):
+def integrate(startdate,stopdate,playerlist = None):
     versions = filterdate(startdate,stopdate)
     p_dic = {}
+    d_dic = {}
     for version in versions :
-        players = findally(queryversion(version),ally='SCF')
+        players = findally(queryversion(version),ally='SCF', playerlist=playerlist)
+        s = 0
+        N = len(players)
         for p in players :
             name = p['pseudo']
             field = p['field']
             bois  = 2*field
+            s += bois/N
             if name not in p_dic :
                 p_dic[name] = bois
             else :
                 p_dic[name] += bois
-    return p_dic
 
-SCF = integrate(2026111018,2026111212)
+        for p in players :
+            name = p['pseudo']
+            field = p['field']
+            bois  = 2*field
+            if name not in d_dic :
+                d_dic[name] = bois-s
+            else :
+                d_dic[name] += bois-s
+    return p_dic, d_dic
+
+
+##
+d1 = '2026-11-05-12h'
+d2 = '2026-11-12-12h'
+
+tstart = int(f'{d1[:4]}{d1[5:7]}{d1[8:10]}{d1[11:13]}')
+tstop = int(f'{d2[:4]}{d2[5:7]}{d2[8:10]}{d2[11:13]}')
+
+playerlist = ['Mattimeo', 'Cat_Woman', 'AntiDot', 'antman', 'cytaf', 'Gadestryll', 'louispretends']
+
+p_dic, d_dic = integrate(tstart,tstop,playerlist=playerlist)
+
+##
+s = ''
+s = s+f'Du [b]{d1[8:10]}/{d1[5:7]}/{d1[:4]}[/b] à {d1[11:13]}h '
+s = s+f'au [b]{d2[8:10]}/{d2[5:7]}/{d2[:4]}[/b] à {d2[11:13]}h\n\n'
+
+fulld = 0
+for name in p_dic:
+    d = d_dic[name]
+    fulld+=d # verify that this is 0 in the end
+    if d < 0 : color = 'c5130f'
+    else : color = '09750c'
+    s = s+f'\t{name} : {p_dic[name]} ([color=#{color}]{d_dic[name]:+.0f}[/color])\n'
+
+print(s)
+
+
 
