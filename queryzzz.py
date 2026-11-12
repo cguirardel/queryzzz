@@ -51,6 +51,7 @@ def filterdate(startdate,stopdate):
         vi = int(v)
         if vi >= startdate and vi <= stopdate:
             vnum.append(vi)
+        elif vi < startdate : break # accelerate the process, date are read from most recent to oldest
     return vnum
 
 def findally(players, ally = 'SCF'):
