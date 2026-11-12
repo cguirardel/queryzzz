@@ -41,6 +41,7 @@ def queryversion(version):
     ans = queryzzz(qry)
     return ans
 
+##
 def filterdate(startdate,stopdate):
     if checkshort(startdate): startdate = short2round(startdate)
     if checkshort(stopdate): stopdate = short2round(stopdate)
