@@ -1,6 +1,6 @@
 
 import requests
-import numpy as np
+# import numpy as np
 
 url = r'https://s5.fourmizzz.fr'
 
